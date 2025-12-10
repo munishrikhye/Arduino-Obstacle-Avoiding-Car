@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Collision Warning System</title>
+
+  <!-- Prism.js syntax highlighting -->
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js" defer></script>
+
+  <style>
+    /* General body */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f5f5f5;
+      color: #333333;
+    }
+
+    /* Top Navigation Bar */
+    nav#menu {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background-color: #1f3b4d;
+      color: white;
+      display: flex;
+      justify-content: center;
+      z-index: 1000;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    nav#menu ul {
+      list-style: none;
+      display: flex;
+      margin: 0;
+      padding: 0.5rem 1rem;
+      flex-wrap: wrap;
+    }
+
+    nav#menu li {
+      margin: 0 15px;
+    }
+
+    nav#menu a {
+      color: #ffffff;
+      text-decoration: none;
+      font-weight: bold;
+      padding: 5px 8px;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    nav#menu a:hover {
+      background-color: #ffffff;
+      color: #1f3b4d;
+      border-radius: 4px;
+    }
+
+    /* Main content */
+    main {
+      padding: 100px 20px 20px 20px; /* Top padding to prevent nav overlap */
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    h1, h2, h3 {
+      color: #1f3b4d;
+    }
+
+    p, li, td, th {
+      color: #333333;
+      line-height: 1.6;
+    }
+
+    img {
+      max-width: 100%;
+      border-radius: 8px;
+      margin: 10px 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+      background-color: #ffffff;
+    }
+
+    th, td {
+      border: 1px solid #cccccc;
+      padding: 10px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #1f3b4d;
+      color: white;
+    }
+
+    tfoot td {
+      font-weight: bold;
+      background-color: #f0f0f0;
+    }
+
+    pre {
+      position: relative;
+      background-color: #2d2d2d;
+      color: #f8f8f2;
+      padding: 1rem;
+      border-radius: 8px;
+      overflow-x: auto;
+      margin: 20px 0;
+    }
+
+    .copy-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background-color: #1f3b4d;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+
+    .copy-btn:hover {
+      background-color: #14506b;
+    }
+
+    ul, ol {
+      margin-left: 20px;
+    }
+
+    @media screen and (max-width: 768px) {
+      nav#menu ul {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      nav#menu li {
+        margin: 5px 0;
+      }
+
+      main {
+        padding-top: 150px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Top Navigation Bar -->
+  <nav id="menu">
+    <ul>
+      <li><a href="#top">Title</a></li>
+      <li><a href="#information">Project Info</a></li>
+      <li><a href="#introduction">Introduction</a></li>
+      <li><a href="#objective">Objective</a></li>
+      <li><a href="#methodology">Methodology</a></li>
+      <li><a href="#circuit-diagram">Circuit</a></li>
+      <li><a href="#environment">Environment</a></li>
+      <li><a href="#bom">BoM</a></li>
+      <li><a href="#prototype">Prototype</a></li>
+      <li><a href="#code">Code</a></li>
+      <li><a href="#conclusion">Conclusion</a></li>
+      <li><a href="#references">References</a></li>
+    </ul>
+  </nav>
+
+  <main>
+    <h1 id="top">Arduino Obstacle Avoiding Car</h1>
+
+    <section id="information">
+      <h2>Project Information</h2>
+      <p><strong>Course:</strong> TECH 117 (Computer Engineering Technology, Fall 2025)</p>
+      <p><strong>Instructor:</strong> Ph.D. Ana Rodrigues</p>
+      <p><strong>Team Members:</strong></p>
+      <ul>
+        <li>Munish Rikhye</li>
+        <li>Musa Bahome</li>
+        <li>Wade Schwarz</li>
+        <li>Mohammed Halim</li>
+      </ul>
+    </section>
+
+    <section id="introduction">
+      <h2>Introduction</h2>
+      <p>Self-Driving Obstacle Avoiding Arduino Car that autonomously detects and avoids obstacles using an ultrasonic
+        sensor. The green LED indicates a clear path, while the red LED and buzzer provide obstacle warning. The car uses
+        DC motors with L298N motor drivers and servo motors for sensor rotation. The chassis is 3D-printed for
+        sustainability, demonstrating energy-efficient operation and automation.</p>
+    </section>
+
+    <section id="objective">
+      <h2>Objective</h2>
+      <ul>
+        <li>Build a self-driving obstacle-avoiding car using Arduino UNO.</li>
+        <li>Use LEDs and buzzer to give visual and audio feedback.</li>
+        <li>Automate sensor scanning with servo motors.</li>
+        <li>Ensure energy-efficient and reusable design.</li>
+      </ul>
+    </section>
+
+    <section id="methodology">
+      <h2>Methodology</h2>
+      <ol>
+        <li>Component Selection: Arduino, sensors, motors, LEDs, buzzer, servo motors, battery, chassis.</li>
+        <li>Circuit Assembly: Connect components on breadboard and motor drivers, servo mounts for sensors.</li>
+        <li>Programming: Code distance detection logic and LED/buzzer feedback.</li>
+        <li>Testing & Optimization: Verify obstacle detection, motor control, and sensor rotation.</li>
+        <li>Environmental Considerations: Reusable components and eco-friendly chassis.</li>
+      </ol>
+    </section>
+
+    <section id="circuit-diagram">
+      <h2>Circuit Diagram</h2>
+      <p>The ultrasonic sensor measures distance; Arduino activates green/red LEDs and buzzer based on distance.</p>
+           <div class="image-container">
+            <img src="collision-warning-system-Arduino.jpg" alt="Arduino collision warning system 1">
+            <img src="collision-warning-system-Arduino2.jpg" alt="Arduino collision warning system 2">
+          </div>
+</section>
+
+    <section id="environment">
+      <h2>Environmental Impact Assessment</h2>
+      <ul>
+        <li>Materials are RoHS/WEEE compliant.</li>
+        <li>Components are modular and reusable.</li>
+        <li>Minimal carbon footprint by sourcing components efficiently.</li>
+      </ul>
+    </section>
+
+    <section id="bom">
+      <h2>Bill of Materials (BoM)</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Part</th>
+            <th>Quantity</th>
+            <th>Description</th>
+            <th>Source</th>
+            <th>Estimated Price (CAD)</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Arduino UNO</td>
+            <td>1</td>
+            <td>Main microcontroller board</td>
+            <td>Amazon / RobotShop</td>
+            <td>$25</td>
+            <td>Connect sensors, motors, LEDs</td>
+          </tr>
+          <tr>
+            <td>Ultrasonic Sensor (HC-SR04)</td>
+            <td>1</td>
+            <td>Distance detection sensor</td>
+            <td>Amazon / Arduino Canada</td>
+            <td>$6</td>
+            <td>Connect Trigger/Echo pins to Arduino</td>
+          </tr>
+          <tr>
+            <td>DC Motors with Wheels</td>
+            <td>4</td>
+            <td>3–6V motors with rubber wheels</td>
+            <td>Amazon</td>
+            <td>$16</td>
+            <td>Connect via L298N driver</td>
+          </tr>
+          <tr>
+            <td>L298N Motor Driver</td>
+            <td>2</td>
+            <td>Dual H-Bridge for controlling 4 motors</td>
+            <td>Amazon</td>
+            <td>$12</td>
+            <td>Connect to Arduino and DC motors</td>
+          </tr>
+          <tr>
+            <td>LEDs (Green & Red)</td>
+            <td>2</td>
+            <td>Indicators for path and obstacle</td>
+            <td>Any electronics store</td>
+            <td>$2</td>
+            <td>Show movement or obstacle detected</td>
+          </tr>
+          <tr>
+            <td>Buzzer</td>
+            <td>1</td>
+            <td>5V buzzer module</td>
+            <td>Amazon</td>
+            <td>$3</td>
+            <td>Beeps when obstacle is too close</td>
+          </tr>
+          <tr>
+            <td>Servo Motors (SG90)</td>
+            <td>2</td>
+            <td>For sensor rotation</td>
+            <td>Amazon</td>
+            <td>$10</td>
+            <td>Rotate sensor for scanning</td>
+          </tr>
+          <tr>
+            <td>Chassis (3D Printed)</td>
+            <td>1</td>
+            <td>Custom car frame</td>
+            <td>In-lab / Laser Cutting</td>
+            <td>$0–$10</td>
+            <td>Eco-friendly reusable design</td>
+          </tr>
+          <tr>
+            <td>Battery Pack (AA/9V)</td>
+            <td>1</td>
+            <td>Powers Arduino and motors</td>
+            <td>Local store</td>
+            <td>$5</td>
+            <td>Connect to Arduino and drivers</td>
+          </tr>
+          <tr>
+            <td>Jumper Wires & Breadboard</td>
+            <td>1 set</td>
+            <td>Wiring connections</td>
+            <td>Amazon / Local store</td>
+            <td>$0 for us
+$30 on Amazon
+</td>
+            <td>Connect all components</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="4"><strong>Total</strong></td>
+            <td colspan="2"><strong>$80–$100 CAD (As of 11/19/2025)</strong></td>
+          </tr>
+        </tfoot>
+      </table>
+    </section>
+
+    <section id="prototype">
+      <h2>Prototype</h2>
+      <p>Assembled prototype on breadboard.</p>
+      <img src="prototype.jpg" alt="Collision warning system prototype">
+    </section>
+
+    <section id="code">
+      <h2>Arduino Code</h2>
+      <pre class="line-numbers"><button class="copy-btn" onclick="copyCode()">Copy</button><code id="arduinoCode" class="language-cpp">
+#include <Servo.h>          // Servo motor control
+#include <NewPing.h>        // Ultrasonic sensor library
+
+// Define motor control pins
+
+// ENA and ENB are PWM pins to control motor speed
+
+// IN1, IN2 control the first motor direction
+
+// IN3, IN4 control the second motor direction
+
+// Pins assignment:
+
+// 10 = ENA (Motor A speed control)
+
+// 6 = IN1 (Motor A direction)
+
+// 7 = IN2 (Motor A direction)
+
+// 5 = IN3 (Motor B direction)
+
+// 4 = IN4 (Motor B direction)
+
+// 3 = ENB (Motor B speed control)
+
+
+
+#include <Servo.h> // Include the Servo library to control a servo motor
+
+
+
+Servo myServo; // Create a Servo object named myServo
+
+long duration; // Variable to store the time taken for ultrasonic pulse to return (in microseconds)
+
+int distance; // Variable to store the calculated distance from ultrasonic sensor (in cm)
+
+
+
+// Define ultrasonic sensor pins
+
+#define TRIG 11 // TRIG pin: sends the ultrasonic pulse
+
+#define ECHO 8 // ECHO pin: receives the reflected pulse
+
+
+
+void setup() {
+
+ // Initialize serial communication at 9600 baud for debugging
+
+ Serial.begin(9600);
+
+
+
+ // Set ultrasonic sensor pins
+
+ pinMode(TRIG, OUTPUT); // TRIG will send pulses
+
+ pinMode(ECHO, INPUT); // ECHO will read pulses
+
+
+
+ // Set motor pins as OUTPUT
+
+ pinMode(10, OUTPUT); // ENA controls speed of Motor A
+
+ pinMode(6, OUTPUT); // IN1 controls direction of Motor A
+
+ pinMode(7, OUTPUT); // IN2 controls direction of Motor A
+
+ pinMode(3, OUTPUT); // ENB controls speed of Motor B
+
+ pinMode(5, OUTPUT); // IN3 controls direction of Motor B
+
+ pinMode(4, OUTPUT); // IN4 controls direction of Motor B
+
+
+
+ // Set both motors to move forward initially
+
+ digitalWrite(6, HIGH); // Motor A: IN1 HIGH
+
+ digitalWrite(7, LOW); // Motor A: IN2 LOW
+
+ digitalWrite(5, HIGH); // Motor B: IN3 HIGH
+
+ digitalWrite(4, LOW); // Motor B: IN4 LOW
+
+
+
+ // Turn on motors at full speed
+
+ digitalWrite(10, HIGH); // ENA HIGH → Motor A ON
+
+ digitalWrite(3, HIGH); // ENB HIGH → Motor B ON
+
+
+
+ // Print a startup message to the serial monitor
+
+ Serial.println("Robot started");
+
+}
+
+
+
+void loop() {
+
+
+
+ myServo.attach(9); // Attach servo to pin 9 (required to control it)
+
+
+
+ // Sweep servo from 0° to 120° in steps of 15°
+
+ for (int angle = 0; angle < 130; angle += 15) {
+
+  myServo.write(angle); // Move servo to current angle
+
+
+
+  // --- Ultrasonic distance measurement ---
+
+  digitalWrite(TRIG, LOW);      // Make sure TRIG is LOW before sending pulse
+
+  delayMicroseconds(2);       // Short delay to stabilize
+
+  digitalWrite(TRIG, HIGH);     // Send ultrasonic pulse
+
+  delayMicroseconds(10);       // Keep pulse HIGH for 10 microseconds
+
+  digitalWrite(TRIG, LOW);      // Stop the pulse
+
+
+
+  duration = pulseIn(ECHO, HIGH);  // Read the time for the echo to return
+
+
+
+  distance = duration * 0.034 / 2;  // Convert duration to distance in cm (speed of sound formula)
+
+
+
+  // Print distance to serial monitor
+
+  Serial.print("Distance: ");
+
+  Serial.print(distance);
+
+  Serial.println(" cm");
+
+
+
+  // Check if an object is closer than 10 cm
+
+  if (distance > 0 && distance <= 10) {
+
+   // Stop both motors if obstacle detected
+
+   digitalWrite(10, LOW); // Motor A OFF
+
+   digitalWrite(3, LOW); // Motor B OFF
+
+   Serial.println("Obstacle detected — Motors STOP");
+
+  } else {
+
+   // Otherwise, keep motors moving forward
+
+   digitalWrite(6, HIGH); // Motor A IN1 HIGH
+
+   digitalWrite(7, LOW); // Motor A IN2 LOW
+
+   digitalWrite(5, HIGH); // Motor B IN3 HIGH
+
+   digitalWrite(4, LOW); // Motor B IN4 LOW
+
+
+
+   digitalWrite(10, HIGH); // Motor A ON
+
+   digitalWrite(3, HIGH); // Motor B ON
+
+  }
+
+
+
+  delay(500); // Wait 0.5 seconds before next loop iteration
+
+ }
+
+
+
+ myServo.write(0); // Return servo to starting position (0°) after sweep
+
+}
+
+
+
+}
+
+      </code></pre>
+
+      <script>
+        function copyCode() {
+          const code = document.getElementById('arduinoCode').innerText;
+          navigator.clipboard.writeText(code)
+            .then(() => alert('Code copied to clipboard!'))
+            .catch(err => console.error('Copy failed:', err));
+        }
+      </script>
+    </section>
+
+    <section id="conclusion">
+      <h2>Conclusion</h2>
+      <p>The system shows a car that can detect obstacles using an ultrasonic sensor and a servo motor, and it stops when something is in the way. We ran into a bunch of issues while building it. One problem was that the motors weren’t getting enough current. The 9-volt battery didn’t give enough power, so in the future we should use lithium-ion batteries. For now, we’re using the lab power supply. Another issue was the wiring. Since we used prototype wires, they were unstable and got loose easily. A good solution for the future is to solder all the connections so everything stays secure.</p>
+    </section>
+
+    <section id="references">
+  <h2>References</h2>
+  <ul class="apa-list">
+    <li>Arduino. (n.d.). Arduino ultrasonic sensor projects. https://projecthub.arduino.cc/projects/tags/ultrasonic-sensor</li>
+    <li>Arduino. (n.d.). Arduino buzzer projects. https://create.arduino.cc/projecthub/projects/tags/buzzer</li>
+    <li>Arduino. (n.d.). Arduino LED projects. https://projecthub.arduino.cc/projects/tags/led</li>
+    <li>Instructables. (n.d.). Arduino distance measurement using ultrasonic sensor. https://www.instructables.com/Arduino-Distance-Measurement-Using-Ultrasonic-Senso/</li>
+    <li>Circuit Basics. (n.d.). How to use an ultrasonic sensor with Arduino. https://www.circuitbasics.com/how-to-use-an-ultrasonic-sensor-with-arduino/</li>
+    <li>Last Minute Engineers. (n.d.). Ultrasonic sensor with Arduino tutorial. https://lastminuteengineers.com/ultrasonic-sensor-arduino-tutorial/</li>
+  </ul>
+</section>
+
+<style>
+  .apa-list {
+    list-style-type: none; /* remove bullets */
+    padding-left: 0;
+  }
+
+  .apa-list li {
+    margin-bottom: 0.5em;
+    text-indent: -1.5em; /* negative indent for hanging */
+    padding-left: 1.5em; /* space before the line starts */
+    line-height: 1.5; /* improve readability */
+  }
+</style>
+  </main>
+</body>
+
+</html>
